@@ -11,6 +11,7 @@ class StudentRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentRecord
         fields = '__all__'
+        read_only_fields = ['balance', 'created_at', 'updated_at']
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
