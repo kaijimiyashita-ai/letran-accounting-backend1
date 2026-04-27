@@ -100,7 +100,7 @@ from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-}
+},
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS: Allow your Vercel frontend URL later
 CORS_ALLOWED_ORIGINS = [
