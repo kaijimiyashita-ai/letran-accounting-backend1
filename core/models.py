@@ -39,6 +39,12 @@ class StudentRecord(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        # On creation, set the initial balance equal to total_fees
+        if self.pk is None:
+            self.balance = self.total_fees
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.student_id} - {self.full_name}"
 
