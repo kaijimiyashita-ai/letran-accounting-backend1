@@ -1,14 +1,11 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY: Keep secret in production via environment variables
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-dev-secret-key')
-
-# DEBUG: False in production
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
+SECRET_KEY = os.environ.get('SECRET_KEY', 'default-secret-key-change-me')
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
@@ -25,9 +22,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',          # MUST be first
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',   # We'll add whitenoise for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,21 +53,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'accounting_backend.wsgi.application'
 
-# Database: Use PostgreSQL if DATABASE_URL is set, otherwise SQLite
-import dj_database_url
+# Database (SQLite for now)
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
+AUTH_PASSWORD_VALIDATORS = []
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -82,10 +73,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 AUTH_USER_MODEL = 'core.User'
 
-# REST Framework
 # REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -96,17 +85,14 @@ REST_FRAMEWORK = {
     ),
 }
 
-# JWT settings
-from datetime import timedelta
+# JWT
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-# CORS: Allow your Vercel frontend URL later
+# CORS – include your Vercel URLs
 CORS_ALLOWED_ORIGINS = [
     'https://letran-accounting.vercel.app',
     'https://letran-accounting-frontend1.vercel.app',
 ]
-# For quick testing, you can use (but don't in production)
-# CORS_ALLOW_ALL_ORIGINS = True
