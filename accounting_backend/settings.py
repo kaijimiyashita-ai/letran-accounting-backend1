@@ -104,7 +104,7 @@ SIMPLE_JWT = {
 
 # CORS: Allow your Vercel frontend URL later
 CORS_ALLOWED_ORIGINS = [
-    'https://letran-accounting-frontend1.vercel.app/',   # Replace with your actual Vercel URL
+    'https://letran-accounting-frontend1.vercel.app',
 ]
 # For quick testing, you can use (but don't in production)
 # CORS_ALLOW_ALL_ORIGINS = True
