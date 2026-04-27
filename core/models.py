@@ -40,9 +40,18 @@ class StudentRecord(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        # On creation, set the initial balance equal to total_fees
         if self.pk is None:
+            # New record: set initial balance to total_fees
             self.balance = self.total_fees
+        else:
+            # Existing record: check if total_fees changed
+            from django.db.models import Sum
+            orig = StudentRecord.objects.get(pk=self.pk)
+            if orig.total_fees != self.total_fees:
+                total_paid = Payment.objects.filter(record=self).aggregate(
+                    total=Sum('amount')
+                )['total'] or 0
+                self.balance = self.total_fees - total_paid
         super().save(*args, **kwargs)
 
     def __str__(self):
